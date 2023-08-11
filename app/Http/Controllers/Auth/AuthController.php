@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -47,7 +48,7 @@ class AuthController extends Controller
             return response()->json(['data'=>$user],200);
 
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
             \DB::rollback();
             Log::error('AuthController registration method at : ',$th->getTrace());
             return response()->json(['message'=>'something wrong! Please try again'],400);

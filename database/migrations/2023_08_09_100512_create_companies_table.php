@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employer_id')->nullable();
-            $table->string('name');
-            $table->string('slug');
+            $table->string('name')->nullable();
+            $table->string('slug')->nullable();
             $table->text('description')->nullable();
             $table->string('location')->nullable();
             $table->longText('logo')->nullable();

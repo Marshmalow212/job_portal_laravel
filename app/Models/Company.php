@@ -19,4 +19,8 @@ class Company extends Model
         'vision',
         'employer_id'
     ];
+
+    public function employer(){
+        return $this->hasOne(User::class,'id','employer_id');
+    }
 }

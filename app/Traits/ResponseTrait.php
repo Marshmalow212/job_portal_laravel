@@ -10,7 +10,7 @@ trait ResponseTrait{
         return response()->json($data,$code);
     }
 
-    public function responseFailed($data, $code = 400){
+    public function responseFailed($data=[], $code = 400){
         $data['message'] = $data['message'] ?? 'Operation Failed!';
         $data['time'] = date('Y-m-d H:i:s',time());
 

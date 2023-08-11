@@ -21,6 +21,10 @@ return new class extends Migration
             $table->text('requirements')->nullable();
             $table->text('facilities')->nullable();
             $table->boolean('status')->default(true);
+            $table->date('deadline')->nullable();
+            $table->string('location')->nullable();
+            $table->integer('salary')->default(0);
+            $table->string('type')->default('in-office');
             $table->timestamps();
 
             $table->foreign('company_id')

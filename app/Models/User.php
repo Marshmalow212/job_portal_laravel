@@ -47,4 +47,14 @@ class User extends Authenticatable
         'password' => 'hashed',
         'dob' => 'date'
     ];
+
+
+    public function getCompanyAttribute(){
+        return $this->hasOne(Company::class,'employer_id','id')->first() ?? null;
+    }
+    protected $appends = ['company'];
+
+    public function company(){
+        return $this->hasOne(Company::class,'employer_id','id')->first() ?? null;
+    }
 }
