@@ -13,19 +13,18 @@ class JobListingController extends Controller
 {
     public function index(Request $request){
         //filters
-        $keywords = $request->query ?? '';
-        $location = $request->location ?? '';
-        $title = $request->title ?? '';
+        $keywords = $request->get('query') ?? '';
+        $location = $request->get('location') ?? '';
+        $title = $request->get('title') ?? '';
 
         $jobs = JobListing::where('status',true)
-                            ->where(function($query) use ($keywords,$location,$title){
-                                $query->where('title','LIKE',"%{$keywords}%")
-                                    ->orWhere('location','LIKE',"%{$keywords}%")
-                                    ->orWhere('description','LIKE',"%{$keywords}%")
-                                    ->orWhere('responsibilities','LIKE',"%{$keywords}%")
-                                    ->orWhere('requirements','LIKE',"%{$keywords}%")
-                                    ->orWhere('title','LIKE',"%{$title}%")
-                                    ->orWhere('location','LIKE',"%{$location}%");
+                            ->where(function($query) use ($keywords){
+                                $query->where('title','like','%'.$keywords.'%')
+                                    ->orWhere('location','LIKE','%'.$keywords.'%')
+                                    ->orWhere('description','LIKE','%'.$keywords.'%')
+                                    ->orWhere('responsibilities','LIKE','%'.$keywords.'%')
+                                    ->orWhere('requirements','LIKE','%'.$keywords.'%')
+                                    ->orWhere('type','LIKE','%'.$keywords.'%');
                             })
                             ->get();
 
