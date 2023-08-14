@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JobListing;
 use App\Models\Company;
+use App\Models\InterestedJob;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -39,6 +40,51 @@ class JobListingController extends Controller
                             ->get();
 
         return $this->responseOk(['data'=>$jobs]);
+    }
+
+    public function setInterest($id){
+        $user = auth()->user();
+        if($user->role != 'job-seeker'){
+            return $this->responseFailed(['message'=>'Invalid Operation!']);
+        }
+
+        $job_id = $id;
+
+        
+        try {
+            $data = InterestedJob::create([
+                'user_id'=>$user->id,
+                'job_id'=> $job_id
+            ]);
+            return $this->responseOk(['message'=>'Added to Interest!'],200);
+        } catch (\Throwable $th) {
+            // throw $th;
+            Log::error('JobListingController setInterest() at',$th->getTrace());
+            return $this->responseFailed();
+        }
+
+    }
+    
+    public function unsetInterest($id){
+        $user = auth()->user();
+        if($user->role != 'job-seeker'){
+            return $this->responseFailed(['message'=>'Invalid Operation!']);
+        }
+
+        $job_id = $id;
+
+        
+        try {
+            $data = InterestedJob::where('user_id',$user->id)
+                                    ->where('job_id',$job_id)
+                                    ?->delete();
+            return $this->responseOk(['message'=>'Removed from Interest!'],200);
+        } catch (\Throwable $th) {
+            // throw $th;
+            Log::error('JobListingController unsetInterest() at',$th->getTrace());
+            return $this->responseFailed();
+        }
+
     }
 
 
