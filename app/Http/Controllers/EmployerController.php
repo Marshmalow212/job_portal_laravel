@@ -121,4 +121,4 @@ class EmployerController extends Controller
         }
 
     }
-}
+}   

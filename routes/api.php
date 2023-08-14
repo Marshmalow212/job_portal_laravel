@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CandidateController;
+use App\Http\Controllers\EmployerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,8 +23,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('profile',[App\Http\Controllers\UserController::class,'profile']);
+    Route::prefix('candidate')->group(function(){
+        Route::get('applications',[CandidateController::class,'applicationListByCandidate']);
+        Route::post('application/{jobId}',[CandidateController::class,'store']);
+        Route::put('application/{id}',[CandidateController::class,'update']);
+        Route::delete('application/{id}',[CandidateController::class,'destroy']);
+    });
 });
 
 Route::post('signup',[App\Http\Controllers\Auth\AuthController::class,'registration']);
 Route::post('login',[App\Http\Controllers\Auth\AuthController::class,'login']);
+
+
+Route::prefix('employer')->group(function(){
+    Route::get('jobs',[EmployerController::class,'jobListByEmployer']);
+    Route::post('job',[EmployerController::class,'jobCreate']);
+    Route::put('job/{id}',[EmployerController::class,'jobUpdate']);
+    Route::delete('job/{id}',[EmployerController::class,'jobDelete']);
+});
+
+
+
 

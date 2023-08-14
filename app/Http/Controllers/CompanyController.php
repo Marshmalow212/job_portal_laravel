@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class CompanyController extends Controller
 {
@@ -48,12 +49,12 @@ class CompanyController extends Controller
 
         if(is_null($company)){
             $company = new Company($validation->validated());
-            $company['slug'] = \Str::slug($company['name']);
+            $company['slug'] = Str::slug($company['name']);
             $company['employer_id'] = $employer_id;
         }
         else{
             $company->fill($validation->validated());
-            $company['slug'] = \Str::slug($company->toArray()['name']);
+            $company['slug'] = Str::slug($company->toArray()['name']);
         }
 
         try {

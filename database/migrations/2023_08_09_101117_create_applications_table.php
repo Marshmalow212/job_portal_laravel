@@ -15,13 +15,15 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('job_id')->nullable();
             $table->unsignedBigInteger('candidate_id')->nullable();
+            $table->string('slug');
             $table->json('education')->nullable();
             $table->json('experience')->nullable();
             $table->json('skills')->nullable();
             $table->text('cover_letter')->nullable();
             $table->string('cv')->nullable();
             $table->string('photo')->nullable();
-            $table->string('result')->nullable();
+            $table->string('result')->default('in-review');
+            $table->date('submission_date')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
 

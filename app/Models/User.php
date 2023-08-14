@@ -52,7 +52,7 @@ class User extends Authenticatable
     public function getCompanyAttribute(){
         return $this->hasOne(Company::class,'employer_id','id')->first() ?? null;
     }
-    protected $appends = ['company','interested'];
+    protected $appends = ['company'];
 
     public function company(){
         return $this->hasOne(Company::class,'employer_id','id')->first() ?? null;
