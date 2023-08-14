@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class EmployerController extends Controller
 {
@@ -41,8 +42,8 @@ class EmployerController extends Controller
         }
 
         $job = $validation->validated();
-        $job['slug'] = \Str::slug($job['title']);
-        $job['type'] = \Str::slug($job['type']);
+        $job['slug'] = Str::slug($job['title']);
+        $job['type'] = Str::slug($job['type']);
         $job['company_id'] = $employer->company->id;
 
         try {
@@ -82,8 +83,8 @@ class EmployerController extends Controller
         }
 
         $job->fill($validation->validated());
-        $job['slug'] = \Str::slug($job['title']);
-        $job['type'] = \Str::slug($job['type']);
+        $job['slug'] = Str::slug($job['title']);
+        $job['type'] = Str::slug($job['type']);
 
         try {
             $job->save();

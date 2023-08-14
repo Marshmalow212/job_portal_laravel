@@ -16,6 +16,7 @@ class JobListingController extends Controller
         $keywords = $request->get('query') ?? '';
         $location = $request->get('location') ?? '';
         $title = $request->get('title') ?? '';
+        $companyId = Company::where('slug',$request->company)->first()?->id;
 
         $jobs = JobListing::where('status',true)
                             ->where(function($query) use ($keywords){
@@ -26,30 +27,16 @@ class JobListingController extends Controller
                                     ->orWhere('requirements','LIKE','%'.$keywords.'%')
                                     ->orWhere('type','LIKE','%'.$keywords.'%');
                             })
-                            ->get();
-
-        return response()->json(['data'=>$jobs],200);
-    }
-
-    public function indexByCompany(Request $request){
-        //filters
-        $keywords = $request->query ?? '';
-        $location = $request->location ?? '';
-        $title = $request->title ?? '';
-
-        $jobs = JobListing::where('status',true)
-                            ->where(function($query) use ($keywords,$location,$title){
-                                $query->where('title','LIKE',"%{$keywords}%")
-                                    ->orWhere('location','LIKE',"%{$keywords}%")
-                                    ->orWhere('description','LIKE',"%{$keywords}%")
-                                    ->orWhere('responsibilities','LIKE',"%{$keywords}%")
-                                    ->orWhere('requirements','LIKE',"%{$keywords}%")
-                                    ->orWhere('title','LIKE',"%{$title}%")
-                                    ->orWhere('location','LIKE',"%{$location}%");
+                            ->where(function($query) use ($title){
+                                $query->orWhere('title','like','%'.$title.'%');
                             })
+                            ->where(function($query) use ($location){
+                                $query->orWhere('location','like','%'.$location.'%');
+                            })
+                            ->orWhere('company_id',$companyId)
                             ->get();
 
-        return response()->json(['data'=>$jobs],200);
+        return $this->responseOk(['data'=>$jobs]);
     }
 
 
