@@ -17,6 +17,7 @@ class JobListingController extends Controller
         $location = $request->get('location') ?? '';
         $title = $request->get('title') ?? '';
         $companyId = Company::where('slug',$request->company)->first()?->id;
+        $sort = $request->get('sorting') ?? ['title','ASC'];
 
         $jobs = JobListing::where('status',true)
                             ->where(function($query) use ($keywords){
@@ -34,6 +35,7 @@ class JobListingController extends Controller
                                 $query->orWhere('location','like','%'.$location.'%');
                             })
                             ->orWhere('company_id',$companyId)
+                            ->orderBy($sort[0],$sort[1])
                             ->get();
 
         return $this->responseOk(['data'=>$jobs]);
