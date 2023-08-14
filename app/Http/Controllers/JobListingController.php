@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
+use function Laravel\Prompts\error;
+
 class JobListingController extends Controller
 {
     public function index(Request $request){
@@ -19,6 +21,9 @@ class JobListingController extends Controller
         $title = $request->get('title') ?? '';
         $companyId = Company::where('slug',$request->company)->first()?->id;
         $sort = $request->get('sorting') ?? ['title','ASC'];
+
+        if(is_string($sort)) $sort = explode(',',$sort);
+
 
         $jobs = JobListing::where('status',true)
                             ->where(function($query) use ($keywords){

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\JobListingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,8 @@ Route::prefix('employer')->group(function(){
     Route::put('job/{id}',[EmployerController::class,'jobUpdate']);
     Route::delete('job/{id}',[EmployerController::class,'jobDelete']);
 });
+
+Route::get('jobs',[JobListingController::class,'index']);
 
 
 
