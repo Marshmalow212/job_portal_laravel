@@ -29,6 +29,6 @@ class JobListing extends Model
     }
 
     public function applications(){
-        return $this->hasMany(Application::class,'job_id','id')->with('candidates');
+        return $this->hasMany(Application::class,'job_id','id')->with('candidate');
     }
 }

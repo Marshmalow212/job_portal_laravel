@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobListingController;
@@ -54,7 +55,15 @@ Route::prefix('admin')->group(function(){
 
 Route::middleware('auth:sanctum')-> prefix('employer')->group(function(){
     Route::prefix('job')->group(function(){
-        Route::get('all',[EmployerController::class,'jobListByEmployer']);
+        Route::get('all',[EmployerController::class,'index']);
+        Route::post('create',[EmployerController::class,'jobCreate']);
+        Route::put('update/{id}',[EmployerController::class,'jobUpdate']);
+        Route::delete('delete/{id}',[EmployerController::class,'jobDelete']);
+
+    });
+
+    Route::prefix('application')->group(function(){
+        Route::get('all',[ApplicationController::class,'index']);
         Route::post('create',[EmployerController::class,'jobCreate']);
         Route::put('update/{id}',[EmployerController::class,'jobUpdate']);
         Route::delete('delete/{id}',[EmployerController::class,'jobDelete']);
