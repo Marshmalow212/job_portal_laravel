@@ -22,7 +22,6 @@ class Application extends Model
         'submission_date',
         'job_id',
         'candidate_id',
-        'job_id'
     ];
 
     protected $casts = [
@@ -30,4 +29,8 @@ class Application extends Model
         'experience'=>'json',
         'skills'=> 'json'
     ];
+
+    public function candidates(){
+        return $this->hasMany(User::class,'id','candidate_id');
+    }
 }

@@ -27,4 +27,8 @@ class JobListing extends Model
     public function company(){
         return $this->hasOne(Company::class,'id','company_id')->with('employer');
     }
+
+    public function applications(){
+        return $this->hasMany(Application::class,'job_id','id')->with('candidates');
+    }
 }

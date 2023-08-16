@@ -36,11 +36,30 @@ Route::post('signup',[App\Http\Controllers\Auth\AuthController::class,'registrat
 Route::post('login',[App\Http\Controllers\Auth\AuthController::class,'login']);
 
 
-Route::prefix('employer')->group(function(){
+Route::prefix('admin')->group(function(){
+
+    Route::prefix('user')->group(function(){
+        Route::get('all',[\App\Http\Controllers\Admin\UserController::class,'index']);
+    });
+
+    Route::prefix('company')->group(function(){
+        Route::get('all',[\App\Http\Controllers\Admin\CompanyController::class,'index']);
+    });
+
     Route::get('jobs',[EmployerController::class,'jobListByEmployer']);
     Route::post('job',[EmployerController::class,'jobCreate']);
     Route::put('job/{id}',[EmployerController::class,'jobUpdate']);
     Route::delete('job/{id}',[EmployerController::class,'jobDelete']);
+});
+
+Route::middleware('auth:sanctum')-> prefix('employer')->group(function(){
+    Route::prefix('job')->group(function(){
+        Route::get('all',[EmployerController::class,'jobListByEmployer']);
+        Route::post('create',[EmployerController::class,'jobCreate']);
+        Route::put('update/{id}',[EmployerController::class,'jobUpdate']);
+        Route::delete('delete/{id}',[EmployerController::class,'jobDelete']);
+
+    });
 });
 
 Route::get('jobs',[JobListingController::class,'index']);
