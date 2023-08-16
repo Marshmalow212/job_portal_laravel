@@ -29,8 +29,12 @@ class Application extends Model
         'experience'=>'json',
         'skills'=> 'json'
     ];
-    
+
     public function candidate(){
         return $this->hasOne(User::class,'id','candidate_id');
+    }
+
+    public function job(){
+        return $this->hasOne(JobListing::class,'id','job_id');
     }
 }

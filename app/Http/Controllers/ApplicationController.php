@@ -22,102 +22,58 @@ class ApplicationController extends Controller
         return response()->json(['data'=>$jobsWithApplication],200);
     }
 
-    public function store(Request $request, $jobId){
-        $candidate = auth()->user();
-        $job = !is_null($jobId)? JobListing::where('id',$jobId)->first():null;
-        $application = Application::where('candidate_id',$candidate->id)->first();
-
-        if(is_null($job)) return $this->responseFailed(['message'=>'No Job Found!'],400);
-
-        $validation = Validator::make($request->all(),[
-            'education' => 'nullable',
-            'experience' => 'nullable',
-            'skills' => 'nullable',
-            'cover_letter' => 'nullable|string',
-            'cv' => 'nullable|string',
-            'photo' => 'nullable|string',
-        ]);
-
-        if($validation->fails()){
-            return $this->responseFailed(['message'=>$validation->errors()->all()],400);
-        }
-
-        $application = new Application($validation->validated());
-        $slug = $candidate->username.' '.$job->title;
-        $application['slug'] = Str::slug($slug);
-        $application['job_id'] = $jobId;
-        $application['candidate_id'] = $candidate->id;
-        $application['submission_date'] = date('Y-m-d',strtotime('now'));
-
-        try {
-            $data = $application->save();
-            return $this->responseOk(['message'=>'Application Successful!','data'=>$data],200);
-        } catch (\Throwable $th) {
-            // throw $th;
-            Log::error('CandidateController store() at',$th->getTrace());
-            return $this->responseFailed();
-        }
-
-
-    }
-
 
     public function update(Request $request, $id){
-        $candidate = auth()->user();
-        $application = Application::where('candidate_id',$candidate->id)
-                                    ->where('id',$id)
+        $employer = auth()->user();
+
+        $application = Application::where('id',$id)
                                     ->where('status',true)
                                     ->first();
 
         if(is_null($application)) return $this->responseFailed(['message'=>'No Application Found!'],400);
 
         $validation = Validator::make($request->all(),[
-            'education' => 'nullable',
-            'experience' => 'nullable',
-            'skills' => 'nullable',
-            'cover_letter' => 'nullable|string',
-            'cv' => 'nullable|string',
-            'photo' => 'nullable|string',
+            'result' => 'nullable|string'
         ]);
 
         if($validation->fails()){
             return $this->responseFailed(['message'=>$validation->errors()->all()],400);
         }
 
-        $application->fill($validation->validated());
+        $result = Str::slug($request->result);
+        $application->fill(['result'=>$result]);
 
         try {
             $application->save();
-            return $this->responseOk(['message'=>'Application Successful!','data'=>$application],200);
+            return $this->responseOk(['message'=>'Application Updated!','data'=>$application],200);
         } catch (\Throwable $th) {
             // throw $th;
-            Log::error('CandidateController update() at',$th->getTrace());
-            return $this->responseFailed();
+            Log::error('ApplicationController update() at',$th->getTrace());
+            return $this->responseFailed(['message'=>'Application Update Failed!']);
         }
-
 
     }
 
 
-    public function destroy($id){
-        $candidate = auth()->user();
-        $application = Application::where('candidate_id',$candidate->id)
-                                    ->where('id',$id)
+    public function show($applicationId){
+        $employer = auth()->user();
+
+        $application = Application::where('id',$applicationId)
+                                    ->where('status',true)
+                                    ->with('candidate','job')
                                     ->first();
 
-        if(!$application){
-            return $this->responseFailed(['message'=>'Application not found!'],400);
-        }
+        if(is_null($application)) return $this->responseFailed(['message'=>'No Application Found!'],400);
 
         try {
-            $data = $application;
-            $application->delete();
-            return $this->responseOk(['message'=>'Delete Success!','data'=>$data],200);
+            return $this->responseOk(['message'=>'Application Updated!','data'=>$application],200);
         } catch (\Throwable $th) {
-            //throw $th;
-            Log::error('CandidateController destroy() at',$th->getTrace());
+            // throw $th;
+            Log::error('ApplicationController show() at',$th->getTrace());
             return $this->responseFailed();
         }
 
     }
+
+
 }

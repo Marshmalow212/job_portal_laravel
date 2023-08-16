@@ -64,9 +64,8 @@ Route::middleware('auth:sanctum')-> prefix('employer')->group(function(){
 
     Route::prefix('application')->group(function(){
         Route::get('all',[ApplicationController::class,'index']);
-        Route::post('create',[EmployerController::class,'jobCreate']);
-        Route::put('update/{id}',[EmployerController::class,'jobUpdate']);
-        Route::delete('delete/{id}',[EmployerController::class,'jobDelete']);
+        Route::get('show/{applicationId}',[ApplicationController::class,'show']);
+        Route::get('update/{applicationId}',[ApplicationController::class,'update']);
 
     });
 });
