@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')-> prefix('employer')->group(function(){
     Route::prefix('application')->group(function(){
         Route::get('all',[ApplicationController::class,'index']);
         Route::get('show/{applicationId}',[ApplicationController::class,'show']);
-        Route::get('update/{applicationId}',[ApplicationController::class,'update']);
+        Route::put('update/{applicationId}',[ApplicationController::class,'update']);
 
     });
 });

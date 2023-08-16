@@ -23,10 +23,10 @@ class ApplicationController extends Controller
     }
 
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $applicationId){
         $employer = auth()->user();
 
-        $application = Application::where('id',$id)
+        $application = Application::where('id',$applicationId)
                                     ->where('status',true)
                                     ->first();
 
@@ -41,10 +41,9 @@ class ApplicationController extends Controller
         }
 
         $result = Str::slug($request->result);
-        $application->fill(['result'=>$result]);
-
+        
         try {
-            $application->save();
+            $application->update(['result'=>$result]);
             return $this->responseOk(['message'=>'Application Updated!','data'=>$application],200);
         } catch (\Throwable $th) {
             // throw $th;
