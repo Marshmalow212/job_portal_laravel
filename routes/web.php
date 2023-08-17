@@ -20,3 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/newapplication', function () {
     return view('templates.NewApplication');
 });
+
+Route::get('/updateapplication', function () {
+    return view('templates.UpdateApplication');
+});

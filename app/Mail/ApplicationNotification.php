@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\JobListing;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,12 +14,16 @@ class ApplicationNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private $application;
+    private $job;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($application)
     {
-        //
+        $this->application = $application;
+        $job = JobListing::where('id',$this->application->job_id)->first();
+        $this->job = $job;
     }
 
     /**
@@ -27,7 +32,7 @@ class ApplicationNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Application Notification',
+            subject: 'Application : '.$this->job->title,
         );
     }
 
@@ -37,7 +42,11 @@ class ApplicationNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'templates.UpdateApplication',
+            with: [
+                "application" => $this->application,
+                "job" => $this->job
+            ]
         );
     }
 

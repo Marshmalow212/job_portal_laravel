@@ -2,18 +2,17 @@
 
 namespace App\Events;
 
-use App\Mail\ApplyNotification;
+use App\Mail\ApplicationNotification;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class ApplicationSubmitted implements ShouldQueue
+class ApplicationUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -27,8 +26,8 @@ class ApplicationSubmitted implements ShouldQueue
 
     private function sendNotificationMail($application){
 
-        Mail::to(env('MAIL_TO_ADDRESS'),'Job Portal Admin')
-                ->send(new ApplyNotification($application));
+        Mail::to(env('MAIL_TO_ADDRESS'),'Job Portal Applicant')
+                ->send(new ApplicationNotification($application));
     }
 
     /**
