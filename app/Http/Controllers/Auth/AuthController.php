@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\CandidateInfo;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -26,7 +29,8 @@ class AuthController extends Controller
             'dob' => 'nullable | date',
             'role' => 'required | string',
             'permanent' => 'nullable | string',
-            'present' => 'nullable | string'
+            'present' => 'nullable | string',
+            'photo' => 'nullable|string'
         ]);
 
         if($validation->fails()){
@@ -35,21 +39,25 @@ class AuthController extends Controller
 
         $address = $request->only('permanent','present');
         $user = $request->except('permanent','present');
-        $user['role'] = \Str::slug($user['role']);
+        $user['role'] = Str::slug($user['role']);
 
         try {
-            \DB::beginTransaction();
+            DB::beginTransaction();
             if($address = Address::create($address)){
                 $user['address_id'] = $address->id;
             }
             $user = User::create($user);
-            \DB::commit();
+            if($user->role == 'job-seeker'){
+                $canidate_info = CandidateInfo::create(['user_id'=>$user->id]);
+
+            }
+            DB::commit();
 
             return response()->json(['data'=>$user],200);
 
         } catch (\Throwable $th) {
             throw $th;
-            \DB::rollback();
+            DB::rollback();
             Log::error('AuthController registration method at : ',$th->getTrace());
             return response()->json(['message'=>'something wrong! Please try again'],400);
         }
@@ -73,7 +81,7 @@ class AuthController extends Controller
             if(auth()->attempt($creds)){
                 $user = auth()->user();
                 $token = $user->createToken('access_token')->plainTextToken;
-                if(\Str::slug($role)!= $user->role){
+                if(Str::slug($role)!= $user->role){
                     auth()->logout();
                     return response()->json(['message'=>'Unauthorized User!'],401);
                 }

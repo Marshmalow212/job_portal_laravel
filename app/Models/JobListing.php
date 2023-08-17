@@ -21,7 +21,8 @@ class JobListing extends Model
         'deadline',
         'status',
         'company_id',
-        'location'
+        'location',
+        'cover_letter'
     ];
 
     public function company(){
