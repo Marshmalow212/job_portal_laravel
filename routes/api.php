@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobListingController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -71,6 +72,9 @@ Route::middleware('auth:sanctum')-> prefix('employer')->group(function(){
 });
 
 Route::get('jobs',[JobListingController::class,'index']);
+
+Route::post('file/test',[TestController::class,'fileUpload']);
+Route::get('file/test',[TestController::class,'fileRetrieve']);
 
 
 

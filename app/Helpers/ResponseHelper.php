@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Traits;
+namespace App\Helpers;
 
-trait ResponseTrait{
+trait ResponseHelper{
     public function responseOk($data=[], $code = 200){
         $data['message'] = $data['message'] ?? 'Operation Successful!';
         $data['time'] = date('Y-m-d H:i:s',time());
