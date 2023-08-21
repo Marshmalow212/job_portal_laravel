@@ -19,7 +19,10 @@ class VerifyEmailController extends Controller
             try {
                 User::where('id',$user->user_id)
                         ->update(['email_verified_at'=>date('Y-m-d')]);
-                $user->delete();
+
+                DB::table('email_verifications')
+                ->where('secret',$request->token)
+                ->delete();
                 return $this->responseOk(['message'=>'Email Verification Successful!']);
             } catch (\Throwable $th) {
                 //throw $th;

@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('verify/email',[\App\Http\Controllers\Auth\VerifyEmailController::class,'mailVerify']);
+Route::post('forgot/password',[\App\Http\Controllers\Auth\ForgotPasswordController::class,'forgotPassword']);
+Route::post('reset/password',[\App\Http\Controllers\Auth\ForgotPasswordController::class,'resetPassword']);
 
 
 Route::middleware('auth:sanctum')->group(function(){
@@ -35,8 +37,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::prefix('candidate')->group(function(){
         Route::get('applications',[CandidateController::class,'applicationListByCandidate']);
+        Route::post('application/update/{id}',[CandidateController::class,'update']);
         Route::post('application/{jobId}',[CandidateController::class,'store']);
-        Route::put('application/{id}',[CandidateController::class,'update']);
         Route::delete('application/{id}',[CandidateController::class,'destroy']);
     });
 });
@@ -68,7 +70,7 @@ Route::middleware('auth:sanctum')-> prefix('employer')->group(function(){
         Route::post('details',[\App\Http\Controllers\CompanyController::class,'storeOrUpdate']);
     });
     Route::prefix('job')->group(function(){
-        Route::get('all',[EmployerController::class,'index']);
+        Route::get('all',[EmployerController::class,'jobListByEmployer']);
         Route::post('create',[EmployerController::class,'jobCreate']);
         Route::put('update/{id}',[EmployerController::class,'jobUpdate']);
         Route::delete('delete/{id}',[EmployerController::class,'jobDelete']);

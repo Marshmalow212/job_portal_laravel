@@ -30,7 +30,7 @@ class CandidateController extends Controller
 
         $validation = Validator::make($request->all(),[
             'cover_letter' => 'nullable|string',
-            'cv' => 'nullable|string',
+            'cv' => 'nullable|file|mimes:pdf,doc,docx',
         ]);
 
         if($validation->fails()){
@@ -43,6 +43,11 @@ class CandidateController extends Controller
         $application['job_id'] = $jobId;
         $application['candidate_id'] = $candidate->id;
         $application['submission_date'] = date('Y-m-d',strtotime('now'));
+
+        if(isset($request->cv) && !is_null($validation->validated()['cv'])){
+            $cv = $this->storeFile($request->cv);
+            $application['cv'] = $cv;
+        }
 
         try {
             $data = $application->save();
@@ -67,12 +72,8 @@ class CandidateController extends Controller
         if(is_null($application)) return $this->responseFailed(['message'=>'No Application Found!'],400);
 
         $validation = Validator::make($request->all(),[
-            'education' => 'nullable',
-            'experience' => 'nullable',
-            'skills' => 'nullable',
             'cover_letter' => 'nullable|string',
-            'cv' => 'nullable|string',
-            'photo' => 'nullable|string',
+            'cv' => 'nullable|file|mimes:doc,pdf,docx'
         ]);
 
         if($validation->fails()){
@@ -80,6 +81,11 @@ class CandidateController extends Controller
         }
 
         $application->fill($validation->validated());
+
+        if(isset($request->cv) && !is_null($validation->validated()['cv'])){
+            $cv = $this->storeFile($request->cv);
+            $application['cv'] = $cv;
+        }
 
         try {
             $application->save();

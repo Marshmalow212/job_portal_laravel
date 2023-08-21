@@ -7,6 +7,7 @@ use App\Jobs\ApplicationUpdated;
 use App\Models\Application;
 use App\Models\JobListing;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 use function Laravel\Prompts\error;
 
@@ -39,14 +40,21 @@ class ApplicationObserver
     public function updated(Application $application): void
     {
         // error_log(json_encode($application));
-        try {
-            $job = new ApplicationUpdated($application);
-            dispatch($job);
-            Log::info('ApplicationObserver data : ',$application->toArray());
-            error_log('Application Update Notification Send');
-        } catch (\Throwable $th) {
-            //throw $th;
-            Log::error('ApplicationObserver onUpdate ',$th->getTrace());
+        $user = auth()->user();
+        if($user->role == Str::slug('Employer')){
+            try {
+                $job = new ApplicationUpdated($application);
+                dispatch($job);
+                Log::info('ApplicationObserver data : ',$application->toArray());
+                error_log('Application Update Notification Send');
+            } catch (\Throwable $th) {
+                //throw $th;
+                Log::error('ApplicationObserver onUpdate ',$th->getTrace());
+            }
+
+        }
+        else{
+            Log::info('Application Updated by Applicant: ',[$user,$application->toArray()]);
         }
     }
 
