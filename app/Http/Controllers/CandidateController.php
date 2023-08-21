@@ -29,12 +29,8 @@ class CandidateController extends Controller
         if(is_null($job)) return $this->responseFailed(['message'=>'No Job Found!'],400);
 
         $validation = Validator::make($request->all(),[
-            'education' => 'nullable',
-            'experience' => 'nullable',
-            'skills' => 'nullable',
             'cover_letter' => 'nullable|string',
             'cv' => 'nullable|string',
-            'photo' => 'nullable|string',
         ]);
 
         if($validation->fails()){

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\SendVerificationMail;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailVerification;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\CandidateInfo;
@@ -56,6 +58,9 @@ class AuthController extends Controller
 
             }
             DB::commit();
+
+            $sendVerificationMailJob = new SendEmailVerification($user); 
+            dispatch($sendVerificationMailJob);
 
             return response()->json(['data'=>$user],200);
 

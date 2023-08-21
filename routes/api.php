@@ -24,6 +24,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
+Route::get('verify/email',[\App\Http\Controllers\Auth\VerifyEmailController::class,'mailVerify']);
+
+
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('profile',[App\Http\Controllers\UserController::class,'profile']);
     Route::post('profile',[App\Http\Controllers\UserController::class,'profileUpdate']);

@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Events\ApplicationSubmitted;
-use App\Events\ApplicationUpdated;
+use App\Jobs\ApplicationSubmitted;
+use App\Jobs\ApplicationUpdated;
 use App\Models\Application;
 use App\Models\JobListing;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +22,9 @@ class ApplicationObserver
         $application->count = $application_count;
         
         try {
-            ApplicationSubmitted::dispatch($application);
+            $job = new ApplicationSubmitted($application);
+            dispatch($job);
+            // ApplicationSubmitted::dispatch($application);
             Log::info('ApplicationObserver data : ',$application->toArray());
             error_log('Application Create Notification Send');
         } catch (\Throwable $th) {
@@ -38,7 +40,8 @@ class ApplicationObserver
     {
         // error_log(json_encode($application));
         try {
-            ApplicationUpdated::dispatch($application);
+            $job = new ApplicationUpdated($application);
+            dispatch($job);
             Log::info('ApplicationObserver data : ',$application->toArray());
             error_log('Application Update Notification Send');
         } catch (\Throwable $th) {
