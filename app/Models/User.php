@@ -17,6 +17,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $appends = ['address','company','candidateInfo'];
+
     protected $fillable = [
         'fullname',
         'email',
@@ -50,13 +52,29 @@ class User extends Authenticatable
     ];
 
 
+    public function getAddressAttribute(){
+        return $this->hasOne(Address::class,'id','address_id')->first() ?? null;
+    }
+
+    public function address(){
+        return $this->hasOne(Address::class,'id','address_id')->first() ?? null;
+    }
+
     public function getCompanyAttribute(){
         return $this->hasOne(Company::class,'employer_id','id')->first() ?? null;
     }
-    protected $appends = ['company'];
 
     public function company(){
         return $this->hasOne(Company::class,'employer_id','id')->first() ?? null;
+    }
+
+
+    public function getCandidateInfoAttribute(){
+        return $this->hasOne(CandidateInfo::class,'user_id','id')->first() ?? null;
+    }
+
+    public function candidateInfo(){
+        return $this->hasOne(CandidateInfo::class,'user_id','id')->first() ?? null;
     }
 
 }

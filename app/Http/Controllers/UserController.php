@@ -9,6 +9,7 @@ use App\Models\JobListing;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -44,7 +45,7 @@ class UserController extends Controller
         $user = User::find($auth->id);
 
         $validation = Validator::make($request->all(),[
-            'photo' => 'nullable|file',
+            'photo' => 'nullable|file|mimes:jpg,jpeg,png',
             'current_password' => 'nullable|string|min:8',
             'new_password' => 'nullable|string|min:8'
 
@@ -54,14 +55,27 @@ class UserController extends Controller
             return $this->responseFailed(['message'=>$validation->errors()->all()],400);
         }
 
-        $data = 
+        $data = $validation->validated();    
+        
+        if(isset($data['photo']) && !is_null($data['photo'])){
+            $data['photo'] = $this->storeFile($request->photo);
+        }
+
+        if(!is_null($data['current_password'])){
+            if(Hash::check($data['current_password'],$user->password)){
+                $data['password'] = Hash::make($data['new_password']);
+            }
+            else{
+                return $this->responseFailed(['message'=>'Current Password Incorrect!']);
+            }
+        }
 
         try {
             $user->update($data);
-            return $this->responseOk(['message'=>'Address Updated!','data'=>$address],200);
+            return $this->responseOk(['message'=>'Profile Updated!','data'=>$user],200);
         } catch (\Throwable $th) {
             //throw $th;
-            Log::error('UserController addressUpdate at',$th->getTrace());
+            Log::error('UserController profileUpdate at',$th->getTrace());
             return $this->responseFailed();
         }
 
@@ -84,7 +98,7 @@ class UserController extends Controller
 
         try {
             $address->update($validation->validated());
-            return $this->responseOk(['message'=>'Address Updated!','data'=>$address],200);
+            return $this->responseOk(['message'=>'Address Updated!','data'=>$user],200);
         } catch (\Throwable $th) {
             //throw $th;
             Log::error('UserController addressUpdate at',$th->getTrace());
@@ -111,7 +125,7 @@ class UserController extends Controller
 
         try {
             $candidateInfo->update($validation->validated());
-            return $this->responseOk(['message'=>'Detailes Updated!','data'=>$candidateInfo],200);
+            return $this->responseOk(['message'=>'Detailes Updated!','data'=>$user],200);
         } catch (\Throwable $th) {
             //throw $th;
             Log::error('UserController candidateInfoUpdate at',$th->getTrace());

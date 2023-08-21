@@ -51,6 +51,10 @@ class AuthController extends Controller
                 $canidate_info = CandidateInfo::create(['user_id'=>$user->id]);
 
             }
+            if($user->role == 'employer'){
+                $company = Company::create(['employer_id'=>$user->id]);
+
+            }
             DB::commit();
 
             return response()->json(['data'=>$user],200);

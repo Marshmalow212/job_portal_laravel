@@ -26,6 +26,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('profile',[App\Http\Controllers\UserController::class,'profile']);
+    Route::post('profile',[App\Http\Controllers\UserController::class,'profileUpdate']);
+    Route::put('profile/address',[App\Http\Controllers\UserController::class,'addressUpdate']);
+    Route::put('profile/candidate',[App\Http\Controllers\UserController::class,'candidateInfoUpdate']);
+
     Route::prefix('candidate')->group(function(){
         Route::get('applications',[CandidateController::class,'applicationListByCandidate']);
         Route::post('application/{jobId}',[CandidateController::class,'store']);
@@ -55,6 +59,11 @@ Route::prefix('admin')->group(function(){
 });
 
 Route::middleware('auth:sanctum')-> prefix('employer')->group(function(){
+
+    Route::prefix('company')->group(function(){
+        Route::get('details',[\App\Http\Controllers\CompanyController::class,'index']);
+        Route::post('details',[\App\Http\Controllers\CompanyController::class,'storeOrUpdate']);
+    });
     Route::prefix('job')->group(function(){
         Route::get('all',[EmployerController::class,'index']);
         Route::post('create',[EmployerController::class,'jobCreate']);

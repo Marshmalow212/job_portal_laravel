@@ -15,12 +15,8 @@ class CompanyController extends Controller
         $employer_id = null;
 
         if(auth()->user()){
-            $employer_id = auth()->user()->id;
-        }
-
-        if(!is_null($employer_id)){
-            $company = Company::where('employer_id',$employer_id)->first();
-
+            $employer = auth()->user();
+            $company =  $employer->company;
         }
         else{
             $company = Company::all();
@@ -38,7 +34,7 @@ class CompanyController extends Controller
             'name' => 'nullable|string',
             'description' => 'nullable|string',
             'location' => 'nullable|string',
-            'company_logo' => 'nullable|file',
+            'company_logo' => 'nullable|file|mimes:jpg,jpeg,png,svg',
             'moto' => 'nullable|string',
             'vision' => 'nullable|string'
         ]);
@@ -57,12 +53,16 @@ class CompanyController extends Controller
             $company['slug'] = Str::slug($company->toArray()['name']);
         }
 
+        if(isset($request->company_logo) && !is_null($validation->validated()['company_logo'])){
+            $company['logo'] = $this->storeFile($validation->validated()['company_logo']);
+        }
+
         try {
             $company->save();
             return $this->responseOk(['data'=>$company],200);
         } catch (\Throwable $th) {
             //throw $th;
-            Log::error('CompanyController store method at',$th->getTrace());
+            Log::error('CompanyController store/update method at',$th->getTrace());
             return $this->responseFailed();
         }
 
