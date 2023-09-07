@@ -19,7 +19,8 @@ class JobListingController extends Controller
         $keywords = $request->get('query') ?? '';
         $location = $request->get('location') ?? '';
         $title = $request->get('title') ?? '';
-        $companyId = Company::where('slug',$request->company)->first()?->id;
+        $company= Company::where('slug',$request->company)->first();
+        $companyId = $company ? $company->id: 0;
         $sort = $request->get('sorting') ?? ['title','ASC'];
 
         if(is_string($sort)) $sort = explode(',',$sort);

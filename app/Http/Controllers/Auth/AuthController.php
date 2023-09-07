@@ -74,6 +74,7 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
+        error_log(json_encode($request->all()));
         $validation = Validator::make($request->all(),[
             'email' => ['required', 'email'],
             'password' => 'required | string | min:8',

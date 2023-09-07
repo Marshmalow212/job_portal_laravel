@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-
+Route::post('test/get',function(Request $request){
+    return response()->json(['data'=>$request->all(),'message'=>'Request Completed'],200);
+});
 
 Route::get('verify/email',[\App\Http\Controllers\Auth\VerifyEmailController::class,'mailVerify']);
 Route::post('forgot/password',[\App\Http\Controllers\Auth\ForgotPasswordController::class,'forgotPassword']);
